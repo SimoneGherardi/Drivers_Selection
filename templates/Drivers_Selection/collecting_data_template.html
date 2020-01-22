@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Distance Collector</title>
+    <style>
+        h {
+            font-family: arial, sans-serif;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        p {
+            font-family: arial, sans-serif;
+        }
+
+        p1 {
+            font-family: arial, sans-serif;
+            text-transform: capitalize;
+        }
+    </style>
+</head>
+<body>
+    <h>Oh shit, here we go again</h><br><br>
+    <h>Insert Destination</h>
+    <br>
+    <p>
+        {%  csrf_token %}
+    {% for dest in destination %}
+        {% if dest.is_destination %}
+            <p1>The destination is: {{ dest.address }} {{ dest.city }} {{ dest.zip_code }} {{ dest.country_code }}</p1><br>
+        {% endif %}
+    {%endfor %}
+    </p>
+    <form method="POST">
+        <p>In field "Address", insert only the street name and number</p>
+        <p>The "Country Code" should be the ISO 3166-1alpha2 code, e.g. it for Italy<a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2" target="_blank"> click here </a> for more details</p>
+        {% csrf_token %}
+        {{ destination_form.as_table }}
+        <input type="submit" value="Submit Destination" name="destination submit">
+    </form>
+    <br>
+    <h>Insert Passengers</h>
+    <br>
+    <p>
+        {% csrf_token %}
+    {% for passenger in passengers %}
+        <p1>{{ passenger.last_name }} {{ passenger.first_name}} from {{ passenger.address }} {{ passenger.city }} {{ passenger.zip_code }} {{ passenger.country_code }}</p1><br>
+    {% endfor %}
+    </p>
+    <form method="POST">
+        <p>In field "Address", insert only the street name and number</p>
+        <p>The "Country Code" should be the ISO 3166-1alpha2 code, e.g. it for Italy<a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2" target="_blank"> click here </a> for more details</p>
+        {% csrf_token %}
+        {{ passenger_form.as_table }}
+        <input type="submit" value="Submit Passenger" name="passengers submit">
+    </form>
+    <br>
+    <h>Insert Drivers</h>
+    <br>
+    <p>
+        {% csrf_token %}
+    {% for driver in drivers %}
+        <p1>{{ driver.last_name }} {{ driver.first_name}} from {{ driver.address }} {{ driver.city }} {{ driver.zip_code }} {{ driver.country_code }}</p1><br>
+    {% endfor %}
+    </p>
+     <form method="POST">
+        <p>In field "Address", insert only the street name and number</p>
+        <p>The "Country Code" should be the ISO 3166-1alpha2 code, e.g. it for Italy<a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2" target="_blank"> click here </a> for more details</p>
+        {% csrf_token %}
+        {{ driver_form.as_table }}
+        <input type="submit" value="Submit Driver" name="drivers submit">
+    </form>
+
+    <form method="POST" action="http://127.0.0.1:8000">
+        {% csrf_token %}
+    <input type="submit" value="Delete All Data" name="remove data" />
+    </form>
+    <form action="http://127.0.0.1:8000/showresult">
+    <input type="submit" value="Calculate" />
+</body>
+</html>
