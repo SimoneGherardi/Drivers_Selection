@@ -32,7 +32,6 @@ def save_data(instances):
                                         country_code=instance.country_code, is_destination=False)
         instance.starting_place.set_coordinates()
         instance.save()
-
     return
 
 
@@ -112,6 +111,8 @@ def create_scores_view(request):
             passenger_matrix[j][i] = round(geodesic(driver.starting_place.coordinates,
                                                     passenger.starting_place.coordinates).km, 4)
             time.sleep(1)
+            j += 1
+        i += 1
 
 #    for i in range(p_rows_number):
 #        for j in range(p_cols_number):
