@@ -18,8 +18,8 @@ class Place(models.Model):
     city = models.CharField(max_length=100, default='')
     country_code = models.CharField(max_length=2, default='')
     zip_code = models.CharField(max_length=20, default='')
-    is_valid = models.BooleanField
-    is_destination = models.BooleanField(default=True)
+    is_valid = models.BooleanField(default=False)
+    is_destination = models.BooleanField(default=False)
 
 #    def __init__(self):
 #        super().__init__(self)
@@ -43,10 +43,10 @@ class Place(models.Model):
             print("Wrong Address Format")
             self.is_valid = False
             return None
-        else:
-            self.is_valid = True
+
+        self.is_valid = True
         self.coordinates = nominatim_data.point
-        print(self.coordinates)
+        #print(self.coordinates)
 
         return self
 
@@ -61,8 +61,8 @@ class Passenger(Person):
     city = models.CharField(max_length=100, default='')
     zip_code = models.CharField(max_length=20, default='')
     country_code = models.CharField(max_length=2, default='')
-    starting_place = models.ForeignKey(Place, related_name='starting_place', on_delete=models.CASCADE, null=True)
-    destination_place = models.ForeignKey(Place, related_name='destination_place', on_delete=models.CASCADE, null=True)
+    starting_place = models.ForeignKey(Place, related_name='starting_place', on_delete=models.PROTECT, null=True)
+    destination_place = models.ForeignKey(Place, related_name='destination_place', on_delete=models.PROTECT, null=True)
     time_of_appearance = models.TimeField
     endurance_time = models.DurationField
 
@@ -110,3 +110,18 @@ class PlaceForm(ModelForm):
     class Meta:
         model = Place
         fields = ['address', 'city', 'zip_code', 'country_code']
+
+
+class Matrix(models.Model):
+    name = models.CharField(max_length=100, default='')
+
+    def get_val(self, row_index, col_index):
+        cell = Cell.objects.get(row=row_index, col=col_index)
+        return cell.val
+
+
+class Cell(models.Model):
+    matrix = models.ForeignKey(Matrix, on_delete=models.CASCADE)
+    row = models.IntegerField(default=0)
+    col = models.IntegerField(default=0)
+    val = models.FloatField(default=0)
