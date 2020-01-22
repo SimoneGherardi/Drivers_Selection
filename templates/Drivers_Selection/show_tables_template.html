@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Distance Collector</title>
+    <script
+            src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous">
+    </script>
+    <style>
+        h {
+            font-family: arial, sans-serif;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        p {
+            font-family: arial, sans-serif;
+        }
+
+        p1 {
+            font-family: arial, sans-serif;
+            text-transform: capitalize;
+        }
+
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%
+        }
+
+        td, th {
+            border: 1px solid #000000;
+            padding: 8px;
+            font-weight: bold;
+            text-transform: capitalize;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            let passengersDataHtml = '';
+            let drivers_names = {{ json_drivers|safe }};
+            let passenger_distances_matrix = {{ passengers_matrix }};
+            let cols_number = {{ passengers_number }};
+            let rows_number = {{ drivers_number }};
+            let i = 0;
+            let j = 0;
+            let tmp = 0;
+            console.log(drivers_names);
+            console.log(passenger_distances_matrix);
+            console.log(cols_number);
+
+            for (let driver of drivers_names) {
+                passengersDataHtml += `<tr><td> ${driver["last_name"]} ${driver["first_name"]}</td>`;
+                for (j = 0; j < cols_number; j++) {
+                    passengersDataHtml += `<td>${passenger_distances_matrix[j][i]} km</td>`;
+                }
+                passengersDataHtml += '</tr>';
+                i++;
+            }
+
+            console.log(passengersDataHtml);
+            $("#drivers_passengers_table").append(passengersDataHtml);
+        });
+
+    </script>
+</head>
+<body>
+    <h>Oh shit, here we go again</h><br><br>
+    <table style="width:50%" id="drivers_passengers_table">
+    <tr>
+        <th>Drivers/Passengers distances in km</th>
+        {% csrf_token %}
+        {% for passenger in passengers %}
+            <th>{{ passenger.last_name }} {{ passenger.first_name }}</th>
+        {% endfor %}
+    </tr>
+</table>
+</body>
+</html>

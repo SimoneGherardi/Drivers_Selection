@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render
 from django.forms import modelformset_factory
 import time
@@ -67,6 +68,15 @@ def remove_old_destination():
             place.is_destination = False
             place.save()
     return
+
+def get_json_drivers(drivers):
+    drivers_json_str = "["
+    for driver in drivers:
+        drivers_json_str += json.dumps(driver.to_json())
+        drivers_json_str += ','
+    drivers_json_str = drivers_json_str[:-1]
+    drivers_json_str += "]"
+    return drivers_json_str
 
 def collecting_data_view(request):
 #    passengerFormSet = modelformset_factory(Passenger, fields=('first_name', 'last_name', 'address', 'city', 'zip_code', 'country_code'))
@@ -145,10 +155,10 @@ def create_scores_view(request):
     print(p_cols_number)
     i = 0
     j = 0
-    passenger_matrix = [[0 for x in range(p_rows_number)] for y in range(p_cols_number)]
+    passengers_matrix = [[0 for x in range(p_rows_number)] for y in range(p_cols_number)]
     for driver in drivers:
         for passenger in passengers:
-            passenger_matrix[j][i] = round(geodesic(driver.starting_place.coordinates,
+            passengers_matrix[j][i] = round(geodesic(driver.starting_place.coordinates,
                                                     passenger.starting_place.coordinates).km, 4)
             time.sleep(1)
             j += 1
@@ -156,23 +166,23 @@ def create_scores_view(request):
         i += 1
     print(i)
     print(j)
-
-    passengers_matrix = Matrix.objects.create(name="passenger_matrix")
-    i, j = 0, 0
-    for driver in drivers:
-        for passenger in passengers:
-            Cell.objects.create(matrix="passenger_matrix", row=i, col=j, val=passenger_matrix[j][i])
-            time.sleep(1)
-            j += 1
-        j = 0
-        i += 1
-    passengers_cells = Cell.objects.all()
+    json_drivers = get_json_drivers(drivers)
+#    passengers_matrix = Matrix.objects.create(name="passenger_matrix")
+#    i, j = 0, 0
+#    for driver in drivers:
+#        for passenger in passengers:
+#            Cell.objects.create(matrix="passenger_matrix", row=i, col=j, val=passenger_matrix[j][i])
+#            time.sleep(1)
+#            j += 1
+#        j = 0
+#        i += 1
+#    passengers_cells = Cell.objects.all()
 #    for i in range(p_rows_number):
 #        for j in range(p_cols_number):
 
     for i in range(p_rows_number):
         for j in range(p_cols_number):
-            print(passenger_matrix[j][i])
+            print(passengers_matrix[j][i])
 
     # building the destination_distance_matrix aka the distance_matrix
 #    if destination is not None:
@@ -185,4 +195,4 @@ def create_scores_view(request):
 #    else:
 #        destination_matrix = []
 
-    return render(request, 'Drivers_Selection/show_scores_template.html', {'passengers': passengers, 'drivers': drivers, 'destination': destination, 'passengers_matrix': passengers_matrix})
+    return render(request, 'Drivers_Selection/show_tables_template.html', {'passengers': passengers, 'drivers': drivers, 'destination': destination, 'passengers_matrix': passengers_matrix, 'drivers_number': p_rows_number, 'passengers_number': p_cols_number, 'json_drivers': json_drivers})
