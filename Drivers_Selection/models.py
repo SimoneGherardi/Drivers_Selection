@@ -50,7 +50,7 @@ class Passenger(Person):
     address = models.CharField(max_length=100, default='')
     city = models.CharField(max_length=100, default='')
     zip_code = models.CharField(max_length=20, default='')
-    country_code = models.CharField(max_length=2, default='')
+    country_code = models.CharField(max_length=2, default='IT')
     starting_place = models.ForeignKey(Place, related_name='starting_place', on_delete=models.PROTECT, null=True)
 #    destination_place = models.ForeignKey(Place, related_name='destination_place', on_delete=models.PROTECT, null=True)
     time_of_appearance = models.TimeField

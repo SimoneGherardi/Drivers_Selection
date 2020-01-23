@@ -24,6 +24,15 @@ def delete_destination_data(Destination):
     return
 
 
+def remove_old_destination():
+    places = get_all_places()
+    for place in places:
+        if place.is_destination:
+            place.is_destination = False
+            place.save()
+    return
+
+
 def save_data_passenger(instances):
     for instance in instances:
         instance.starting_place = Place.objects.create(address=instance.address, city=instance.city,
@@ -62,18 +71,11 @@ def get_all_places():
             time.sleep(1)
     return places
 
+
 def get_index_from_queryset_from_id(queryset, element_id):
     for index, el in enumerate(queryset):
         if el.id == element_id:
             return index
-
-def remove_old_destination():
-    places = get_all_places()
-    for place in places:
-        if place.is_destination:
-            place.is_destination = False
-            place.save()
-    return
 
 
 def get_json_drivers(drivers):
@@ -124,7 +126,7 @@ def relativize_scores_and_rank(rank_name, drivers, absolute_scores):
     for element in relative_scores:
         if element < -1:
             element = -1
-    create_rank_from_scores(rank_name,drivers,relative_scores)
+    create_rank_from_scores(rank_name, drivers, relative_scores)
 
 
 def calculate_and_store_passengers_distance_scores(drivers, passengers, passengers_matrix):
@@ -137,14 +139,14 @@ def calculate_and_store_passengers_distance_scores(drivers, passengers, passenge
             if passengers_matrix[indexp][indexd] != 0:
                 absolute_scores[indexd] += 1 / pow(passengers_matrix[indexp][indexd], 2)
     relativize_scores_and_rank("DP", drivers, absolute_scores)
-
+    return absolute_scores
 
 def calculate_and_store_destination_distance_scores(drivers, destination_matrix):
     rows_number = len(drivers)
-    absolute_score = list()
-    absolute_score = destination_matrix[0]
-    relativize_scores_and_rank("DD", drivers, absolute_score)
-
+    absolute_scores = list()
+    absolute_scores = destination_matrix[0]
+    relativize_scores_and_rank("DD", drivers, absolute_scores)
+    return absolute_scores
 
 def calculate_and_store_enviromental_impact_scores(drivers):
     absolute_scores = list()
@@ -153,34 +155,31 @@ def calculate_and_store_enviromental_impact_scores(drivers):
         c = driver.fuel_consumption
         absolute_scores.append(e*c)
     relativize_scores_and_rank("EI", drivers, absolute_scores)
-
+    return absolute_scores
 
 def calculate_and_store_available_seats_scores(drivers):
     absolute_scores = list()
     for driver in drivers:
         absolute_scores.append(driver.available_seats)
     relativize_scores_and_rank("AS", drivers, absolute_scores)
-
+    return absolute_scores
 
 def calculate_and_store_habit_scores(drivers):
     absolute_scores = list()
     for driver in drivers:
         absolute_scores.append(driver.habit)
     relativize_scores_and_rank("Ha", drivers, absolute_scores)
-
+    return absolute_scores
 
 def calculate_and_store_total_scores(drivers):
     rows_number = len(drivers)
-    total_scores = list()
-    for index in range(rows_number):
-        total_scores.append(0.0)
-    ranks = Rank.objects.all()
+    total_scores = [0.0 for i in range(rows_number)]
+    ranks = Rank.objects.exclude(name="TS")
     for rank in ranks:
         rank_elements = RankElement.objects.filter(rank=rank.id)
         for rank_element in rank_elements:
             total_scores[get_index_from_queryset_from_id(drivers, rank_element.id_element)] += rank_element.score
-    create_rank_from_scores("Total Scores rank", drivers, total_scores)
-
+    create_rank_from_scores("TS", drivers, total_scores)
 
 
 def collecting_data_view(request):
@@ -273,15 +272,15 @@ def create_scores_view(request):
                                                    destination.coordinates).km, 4)
         print(destination_matrix[0][index])
 
-#    calculate_and_store_passengers_distance_scores(drivers, passengers, passengers_matrix)
+    calculate_and_store_passengers_distance_scores(drivers, passengers, passengers_matrix)
 
-#    calculate_and_store_destination_distance_scores(drivers, destination_matrix)
+    calculate_and_store_destination_distance_scores(drivers, destination_matrix)
 
-#    calculate_and_store_enviromental_impact_scores(drivers)
+    calculate_and_store_enviromental_impact_scores(drivers)
 
-#    calculate_and_store_available_seats_scores(drivers)
+    calculate_and_store_available_seats_scores(drivers)
 
-#    calculate_and_store_habit_scores(drivers)
+    calculate_and_store_habit_scores(drivers)
 
     calculate_and_store_total_scores(drivers)
 
@@ -296,4 +295,8 @@ def create_scores_view(request):
     return render(request, 'Drivers_Selection/show_tables_template.html',
                   {'passengers': passengers, 'drivers': drivers, 'destination': destination,
                    'passengers_matrix': passengers_matrix, 'drivers_number': rows_number,
-                   'passengers_number': p_cols_number, 'json_drivers': json_drivers})
+                   'passengers_number': p_cols_number, 'json_drivers': json_drivers, 'destination_matrix': destination_matrix})
+
+
+def show_scores_view(request):
+    return render(request, 'Drivers_Selection/show_scores_template.html')

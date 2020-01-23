@@ -29,12 +29,14 @@
             width: 100%
         }
 
+
         td, th {
             border: 1px solid #000000;
             padding: 8px;
             font-weight: bold;
             text-transform: capitalize;
         }
+
     </style>
     <script>
         $(document).ready(function () {
@@ -58,23 +60,63 @@
                 passengersDataHtml += '</tr>';
                 i++;
             }
-
+            passengersDataHtml += '</th>'
             console.log(passengersDataHtml);
             $("#drivers_passengers_table").append(passengersDataHtml);
         });
+    </script>
+    <script>
 
+        $(document).ready(function () {
+            let destinationDataHtml = '';
+            let drivers = {{ json_drivers|safe }};
+            let destination_distances_matrix = {{ destination_matrix }};
+            if (destination_distances_matrix.length === 0)
+            {
+                destinationDataHtml += `<tr>No Destination Submitted</tr>`
+                $("#drivers_destination_table").append(destinationDataHtml);
+            }
+            let i = 0;
+            let j = 0;
+            console.log(drivers);
+            console.log(destination_distances_matrix);
+
+           for (let driver of drivers) {
+                destinationDataHtml += `<tr><td> ${driver["last_name"]} ${driver["first_name"]}</td>`;
+                for (j = 0; j < 1; j++) {
+                    destinationDataHtml += `<td>${destination_distances_matrix[j][i]} km</td>`;
+                }
+                destinationDataHtml += '</tr>';
+                i++;
+            }
+            console.log(destinationDataHtml);
+           var $tag_html = $("#drivers_destination_table");
+           $tag_html.append(destinationDataHtml);
+        });
     </script>
 </head>
 <body>
-    <h>Oh shit, here we go again</h><br><br>
-    <table style="width:50%" id="drivers_passengers_table">
-    <tr>
-        <th>Drivers/Passengers distances in km</th>
-        {% csrf_token %}
-        {% for passenger in passengers %}
+    <br><br>
+    <table style="width:50%" id="tables">
+        <th><table style="width:50%" id="drivers_passengers_table">
+            <tr>
+            <th>Drivers/Passengers distances in km</th>
+            {% csrf_token %}
+            {% for passenger in passengers %}
             <th>{{ passenger.last_name }} {{ passenger.first_name }}</th>
-        {% endfor %}
-    </tr>
-</table>
+            {% endfor %}
+            </tr>
+        </table>
+            <th>
+            <table style="width:50%" id="drivers_destination_table">
+                <tr>
+                <th>Drivers/Destination distances in km</th>
+                    <th>{% csrf_token %} {{ destination.address }} {{ destination.city }} {{ destination.zip_code }} {{ destination.country_code }}</th>
+                </tr>
+            </table>
+            </th>
+    </table>
+    <form action="http://127.0.0.1:8000/showscores">
+        <input type="submit" value="Get Scores" /></form>
 </body>
 </html>
