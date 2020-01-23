@@ -1,8 +1,10 @@
 import geopy
+from django import forms
 from django.contrib.gis.db import models
 from django.forms import ModelForm
 from geopy import Point
 from geopy.geocoders import Nominatim
+from django.contrib.postgres.fields import ArrayField
 
 
 class Car(models.Model):
@@ -21,23 +23,11 @@ class Place(models.Model):
     is_valid = models.BooleanField(default=False)
     is_destination = models.BooleanField(default=False)
 
-#    def __init__(self):
-#        super().__init__(self)
-#        self.set_coordinates()
-
-#    def __init__(self, address, city, zip_code, country_code, is_destination):
-#        self.__init__(self)
-#        self.address = address
-#        self.city = city
-#        self.zip_code = zip_code
-#        self.country_code = country_code
-#        self.is_destination = is_destination
-
     def set_coordinates(self):
         geo_locator = Nominatim(user_agent="distance_collector")
         nom = Nominatim(domain='localhost:8000', scheme='http')
         my_query = dict({'street': self.address, 'city': self.city, 'postalcode': self.zip_code})
-        nominatim_data = geo_locator.geocode(query=my_query, exactly_one=True, timeout=10,
+        nominatim_data = geo_locator.geocode(query=my_query, exactly_one=True, timeout=20,
                                              country_codes=self.country_code)
         if nominatim_data is None:
             print("Wrong Address Format")
@@ -46,7 +36,7 @@ class Place(models.Model):
 
         self.is_valid = True
         self.coordinates = nominatim_data.point
-        #print(self.coordinates)
+        #        print(self.coordinates)
 
         return self
 
@@ -62,20 +52,32 @@ class Passenger(Person):
     zip_code = models.CharField(max_length=20, default='')
     country_code = models.CharField(max_length=2, default='')
     starting_place = models.ForeignKey(Place, related_name='starting_place', on_delete=models.PROTECT, null=True)
-    destination_place = models.ForeignKey(Place, related_name='destination_place', on_delete=models.PROTECT, null=True)
+#    destination_place = models.ForeignKey(Place, related_name='destination_place', on_delete=models.PROTECT, null=True)
     time_of_appearance = models.TimeField
     endurance_time = models.DurationField
+    habit = models.FloatField(default=0)
 
 
 class Driver(Passenger):
-    car = Car
+
+    #    ELECTRICAL = 'EC'
+    #    DIESEL = 'DS'
+    #    PETROL = 'PT'
+    #    GAS = 'GS'
+    #    FUEL_TYPE_CHOICES = (
+    #        ('EC', 'Electrical'),
+    #        ('DS', 'Diesel'),
+    #        ('PT', 'Petrol'),
+    #        ('GS', 'Gas'),
+    #    )
+
     is_driving = models.BooleanField
     car_name = models.CharField(max_length=50, default='')
-    fuel_type = models.CharField(max_length=50, default='')
-    fuel_consumption = models.FloatField()
-    available_seats = models.IntegerField()
+    fuel_type = models.CharField(max_length=2, default='')
+    fuel_consumption = models.FloatField(default=0)
+    available_seats = models.IntegerField(default=0)
 
-    #better use Serializer
+    #   better use Serializer
     def to_json(self):
         return {"last_name": self.last_name, "first_name": self.first_name}
 
@@ -97,13 +99,16 @@ class Trip(models.Model):
 class PassengerForm(ModelForm):
     class Meta:
         model = Passenger
-        fields = ['first_name', 'last_name', 'address', 'city', 'zip_code', 'country_code']
+        fields = ['first_name', 'last_name', 'address', 'city', 'zip_code', 'country_code', 'habit']
 
 
 class DriverForm(ModelForm):
+    #    fuel_type = forms.ChoiceField(widget=forms.RadioSelect, choices=FUEL_TYPE_CHOICES)
+
     class Meta:
         model = Driver
-        fields = ['first_name', 'last_name', 'address', 'city', 'zip_code', 'country_code', 'car_name', 'fuel_type', 'fuel_consumption', 'available_seats']
+        fields = ['first_name', 'last_name', 'address', 'city', 'zip_code', 'country_code', 'car_name', 'fuel_type',
+                  'fuel_consumption', 'available_seats', 'habit']
 
 
 class PlaceForm(ModelForm):
@@ -125,3 +130,14 @@ class Cell(models.Model):
     row = models.IntegerField(default=0)
     col = models.IntegerField(default=0)
     val = models.FloatField(default=0)
+
+
+class Rank(models.Model):
+    name = models.CharField(max_length=100, default='')
+
+
+class RankElement(models.Model):
+    rank = models.ForeignKey(Rank, on_delete=models.CASCADE)
+    position_in_rank = models.IntegerField(default=0)
+    id_element = models.IntegerField(default=0)
+    score = models.FloatField(default=0)
