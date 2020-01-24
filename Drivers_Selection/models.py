@@ -18,7 +18,7 @@ class Place(models.Model):
     address = models.CharField(max_length=100)
     coordinates = geopy.point.Point
     city = models.CharField(max_length=100, default='')
-    country_code = models.CharField(max_length=2, default='')
+    country_code = models.CharField(max_length=2, default='IT')
     zip_code = models.CharField(max_length=20, default='')
     is_valid = models.BooleanField(default=False)
     is_destination = models.BooleanField(default=False)
@@ -140,4 +140,5 @@ class RankElement(models.Model):
     rank = models.ForeignKey(Rank, on_delete=models.CASCADE)
     position_in_rank = models.IntegerField(default=0)
     id_element = models.IntegerField(default=0)
+    last_name_element = models.CharField(max_length=100, default='')
     score = models.FloatField(default=0)

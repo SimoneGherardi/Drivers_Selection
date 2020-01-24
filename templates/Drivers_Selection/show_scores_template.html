@@ -3,8 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        h {
+            font-family: arial, sans-serif;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        p {
+            font-family: arial, sans-serif;
+        }
+
+        p1 {
+            font-family: arial, sans-serif;
+            text-transform: capitalize;
+        }
+
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%
+        }
+
+
+        td, th {
+            border: 1px solid #000000;
+            padding: 8px;
+            font-weight: bold;
+            text-transform: capitalize;
+        }
+    </style>
 </head>
 <body>
-<h>Oh shit, here we go again</h>
+<br><br>
+<table style="width:50%" id="scores_table">
+    <tr>
+            <th>
+
+            <table style="width:50%" id="DP scores">
+                <tr>
+                    <th>Drivers-Passengers Scores </th>
+                    <th>Drivers</th>
+                    <th>Scores</th>
+                </tr>
+                {% for rank_element in DPrank %}
+                    <tr>
+                    <th> {{ rank_element.position_in_rank }}. </th>
+                    <th> {{ rank_element.last_name_element }} </th>
+                    <th> {{ rank_element.score }} </th>
+                    </tr>
+                {% endfor %}
+            </table>
+            </th>
+
+            <th>
+            <table style="width:50%" id="EI scores">
+                <tr>
+                    <th>Enviromental Impact Scores </th>
+                    <th>Drivers</th>
+                    <th>Scores</th>
+                </tr>
+                {% for rank_element in EIrank %}
+                    <tr>
+                    <th> {{ rank_element.position_in_rank }}. </th>
+                    <th> {{ rank_element.last_name_element }} </th>
+                    <th> {{ rank_element.score }} </th>
+                    </tr>
+                {% endfor %}
+            </table>
+            </th>
+            <th>
+            <table style="width:50%" id="DD scores">
+                <tr>
+                    <th>Driver-Destination Scores </th>
+                    <th>Drivers</th>
+                    <th>Scores</th>
+                </tr>
+                {% for rank_element in DDrank %}
+                    <tr>
+                    <th> {{ rank_element.position_in_rank }}. </th>
+                    <th> {{ rank_element.last_name_element }} </th>
+                    <th> {{ rank_element.score }} </th>
+                    </tr>
+                {% endfor %}
+            </table>
+            </th>
+            <th>
+            <table style="width:50%" id="AS scores">
+                <tr>
+                    <th>Available Seats Scores </th>
+                    <th>Drivers</th>
+                    <th>Scores</th>
+                </tr>
+                {% for rank_element in ASrank %}
+                    <tr>
+                    <th> {{ rank_element.position_in_rank }}. </th>
+                    <th> {{ rank_element.last_name_element }} </th>
+                    <th> {{ rank_element.score }} </th>
+                    </tr>
+                {% endfor %}
+            </table>
+            </th>
+        <th>
+            <table style="width:50%" id="Ha scores">
+                <tr>
+                    <th>Habit Scores </th>
+                    <th>Drivers</th>
+                    <th>Scores</th>
+                </tr>
+                {% for rank_element in Harank %}
+                    <tr>
+                    <th> {{ rank_element.position_in_rank }}. </th>
+                    <th> {{ rank_element.last_name_element }} </th>
+                    <th> {{ rank_element.score }} </th>
+                    </tr>
+                {% endfor %}
+            </table>
+            </th>
+
+
+    </tr>
+</table>
+
 </body>
 </html>

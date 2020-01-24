@@ -116,8 +116,8 @@ def create_rank_from_scores(rank_name, drivers, scores):
         ordered_scores.append(tmp_max)
         scores[index_max] = -1
         print(ordered_scores[index], drivers[index_max].last_name)
-        RankElement.objects.create(rank=rank_ref, position_in_rank=index + 1, id_element=drivers[index_max].id,
-                                   score=ordered_scores[index])
+        RankElement.objects.create(rank=rank_ref, position_in_rank=index + 1, id_element=drivers[index_max].id, last_name_element=drivers[index_max].last_name,
+                                   score=round(ordered_scores[index], 4))
 
 
 def relativize_scores_and_rank(rank_name, drivers, absolute_scores):
@@ -299,4 +299,12 @@ def create_scores_view(request):
 
 
 def show_scores_view(request):
-    return render(request, 'Drivers_Selection/show_scores_template.html')
+
+    drivers = get_all_drivers()
+    DPrank = RankElement.objects.filter(rank=Rank.objects.get(name="DP"))
+    EIrank = RankElement.objects.filter(rank=Rank.objects.get(name="EI"))
+    DDrank = RankElement.objects.filter(rank=Rank.objects.get(name="DD"))
+    ASrank = RankElement.objects.filter(rank=Rank.objects.get(name="AS"))
+    Harank = RankElement.objects.filter(rank=Rank.objects.get(name="Ha"))
+    partial_ranks = Rank.objects.exclude(name="TS")
+    return render(request, 'Drivers_Selection/show_scores_template.html', {'DPrank': DPrank, 'EIrank': EIrank, 'DDrank': DDrank, 'ASrank': ASrank, 'Harank': Harank, 'drivers': drivers, 'partial_ranks': partial_ranks})
