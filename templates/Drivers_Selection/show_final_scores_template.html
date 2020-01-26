@@ -33,7 +33,6 @@
             text-transform: capitalize;
         }
 
-
         input[type=button], input[type=submit], input[type=reset] {
             background-color: #0066ff;
             border: none;
@@ -47,17 +46,16 @@
 </head>
 <body>
 <br><br>
-<table  id="scores_table">
+<table id="scores_table">
     <tr>
             <th>
-
-            <table id="DP scores">
+            <table id="TS scores">
                 <tr>
-                    <th>Drivers-Passengers Scores </th>
+                    <th>Total Scores</th>
                     <th>Drivers</th>
                     <th>Scores</th>
                 </tr>
-                {% for rank_element in DPrank %}
+                {% for rank_element in TSrank %}
                     <tr>
                     <th> {{ rank_element.position_in_rank }}. </th>
                     <th> {{ rank_element.last_name_element }} </th>
@@ -68,13 +66,13 @@
             </th>
 
             <th>
-            <table id="EI scores">
+            <table id="LDD scores">
                 <tr>
-                    <th>Enviromental Impact Scores </th>
+                    <th>Long Drivers Distance Scores</th>
                     <th>Drivers</th>
                     <th>Scores</th>
                 </tr>
-                {% for rank_element in EIrank %}
+                {% for rank_element in LDDrank %}
                     <tr>
                     <th> {{ rank_element.position_in_rank }}. </th>
                     <th> {{ rank_element.last_name_element }} </th>
@@ -83,14 +81,15 @@
                 {% endfor %}
             </table>
             </th>
+
             <th>
-            <table id="DD scores">
+            <table id="SDD scores">
                 <tr>
-                    <th>Driver-Destination Scores </th>
+                    <th>Short Drivers Distance Scores</th>
                     <th>Drivers</th>
                     <th>Scores</th>
                 </tr>
-                {% for rank_element in DDrank %}
+                {% for rank_element in SDDrank %}
                     <tr>
                     <th> {{ rank_element.position_in_rank }}. </th>
                     <th> {{ rank_element.last_name_element }} </th>
@@ -99,44 +98,56 @@
                 {% endfor %}
             </table>
             </th>
-            <th>
-            <table id="AS scores">
-                <tr>
-                    <th>Available Seats Scores </th>
-                    <th>Drivers</th>
-                    <th>Scores</th>
-                </tr>
-                {% for rank_element in ASrank %}
-                    <tr>
-                    <th> {{ rank_element.position_in_rank }}. </th>
-                    <th> {{ rank_element.last_name_element }} </th>
-                    <th> {{ rank_element.score }} </th>
-                    </tr>
-                {% endfor %}
-            </table>
-            </th>
+    </tr>
+    <tr>
         <th>
-            <table id="Ha scores">
+            <table id="TS needed drivers">
                 <tr>
-                    <th>Habit Scores </th>
+                    <th>Total Scores Needed Drivers</th>
                     <th>Drivers</th>
-                    <th>Scores</th>
                 </tr>
-                {% for rank_element in Harank %}
+                {% for rank_element in TS_needed_drivers %}
                     <tr>
                     <th> {{ rank_element.position_in_rank }}. </th>
                     <th> {{ rank_element.last_name_element }} </th>
-                    <th> {{ rank_element.score }} </th>
                     </tr>
                 {% endfor %}
             </table>
-            </th>
+        </th>
 
+        <th>
+            <table id="LDD needed drivers">
+                <tr>
+                    <th>Long Drivers Distance Needed Drivers</th>
+                    <th>Drivers</th>
+                </tr>
+                {% for rank_element in LDD_needed_drivers %}
+                    <tr>
+                    <th> {{ rank_element.position_in_rank }}. </th>
+                    <th> {{ rank_element.last_name_element }} </th>
+                    </tr>
+                {% endfor %}
+            </table>
+        </th>
+
+        <th>
+            <table id="SDD needed drivers">
+                <tr>
+                    <th>Short Drivers Distance Needed Drivers</th>
+                    <th>Drivers</th>
+                </tr>
+                {% for rank_element in SDD_needed_drivers %}
+                    <tr>
+                    <th> {{ rank_element.position_in_rank }}. </th>
+                    <th> {{ rank_element.last_name_element }} </th>
+                    </tr>
+                {% endfor %}
+            </table>
+        </th>
 
     </tr>
 </table>
-<br><br>
-<form action="http://127.0.0.1:8000/showfinalscores">
-        <input type="submit" value="Get Final Scores" /></form>
+
+
 </body>
 </html>

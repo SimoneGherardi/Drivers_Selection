@@ -17,6 +17,32 @@
             font-family: arial, sans-serif;
             text-transform: capitalize;
         }
+
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%
+        }
+
+
+        input[type=submit] {
+            width: 50%;
+            background-color: #0066ff;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+
+        td, th {
+            border: 1px solid #000000;
+            padding: 8px;
+            font-weight: bold;
+            text-transform: capitalize;
+        }
     </style>
 </head>
 <body>
@@ -24,7 +50,7 @@
     <br>
     <p>
         {%  csrf_token %}
-    {% for dest in destination %}
+    {% for dest in places %}
         {% if dest.is_destination %}
             <p1>The destination is: {{ dest.address }} {{ dest.city }} {{ dest.zip_code }} {{ dest.country_code }}</p1><br>
         {% endif %}
@@ -34,7 +60,7 @@
         <p>In field "Address", insert only the street name and number</p>
         <p>The "Country Code" should be the ISO 3166-1alpha2 code, e.g. it for Italy<a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2" target="_blank"> click here </a> for more details</p>
         {% csrf_token %}
-        {{ destination_form.as_table }}
+        {{ destination_form.as_p }}
         <input type="submit" value="Submit Destination" name="destination submit">
     </form>
     <br>
@@ -51,7 +77,7 @@
         <p>The "Country Code" should be the ISO 3166-1alpha2 code, e.g. it for Italy<a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2" target="_blank"> click here </a> for more details</p>
 
         {% csrf_token %}
-        {{ passenger_form.as_table }}
+        {{ passenger_form.as_p }}
         <input type="submit" value="Submit Passenger" name="passengers submit">
     </form>
     <br>
@@ -68,15 +94,17 @@
         <p>The "Country Code" should be the ISO 3166-1alpha2 code, e.g. it for Italy<a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2" target="_blank"> click here </a> for more details</p>
          <p>Field "Fuel Type" must be "ec" for Electrical cars, "gs" for Gas cars, "pt" for Petrol cars, "ds" for Diesel cars</p>
         {% csrf_token %}
-        {{ driver_form.as_table }}
+        {{ driver_form.as_p }}
         <input type="submit" value="Submit Driver" name="drivers submit">
     </form>
 
-    <form method="POST" action="http://127.0.0.1:8000">
-        {% csrf_token %}
-    <input type="submit" value="Delete All Data" name="remove data" />
-    </form>
     <form action="http://127.0.0.1:8000/showresult">
         <input type="submit" value="Calculate" /></form>
+
+    <form method="POST" action="http://127.0.0.1:8000">
+        {% csrf_token %}
+    <input type="submit" value="Delete All Data" name="remove data" id="delete_all" style="background-color: #B0C4DE; color:black"/>
+    </form>
+
 </body>
 </html>

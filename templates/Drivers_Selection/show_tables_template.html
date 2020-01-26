@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Distance Collector</title>
+    <title>Drivers Selection</title>
     <script
             src="https://code.jquery.com/jquery-3.4.1.min.js"
             integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
@@ -35,6 +35,17 @@
             padding: 8px;
             font-weight: bold;
             text-transform: capitalize;
+        }
+
+
+        input[type=button], input[type=submit], input[type=reset] {
+            background-color: #0066ff;
+            border: none;
+            color: white;
+            padding: 16px 32px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: pointer;
         }
 
     </style>
@@ -97,7 +108,7 @@
 </head>
 <body>
     <br><br>
-    <table style="width:50%" id="tables">
+    <table id="tables">
         <th><table style="width:50%" id="drivers_passengers_table">
             <tr>
             <th>Drivers/Passengers distances in km</th>
@@ -108,7 +119,7 @@
             </tr>
         </table>
             <th>
-            <table style="width:50%" id="drivers_destination_table">
+            <table id="drivers_destination_table">
                 <tr>
                 <th>Drivers/Destination distances in km</th>
                     <th>{% csrf_token %} {{ destination.address }} {{ destination.city }} {{ destination.zip_code }} {{ destination.country_code }}</th>
@@ -116,6 +127,7 @@
             </table>
             </th>
     </table>
+    <br><br>
     <form action="http://127.0.0.1:8000/showscores">
         <input type="submit" value="Get Scores" /></form>
 </body>
